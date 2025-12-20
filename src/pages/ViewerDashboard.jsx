@@ -3,7 +3,7 @@ import logo from "../assets/Logo.png";
 
 export default function AdminDashboard() {
   return (
-    <div className="flex min-h-screen bg-[#F5EBD9]">
+    <div className="flex min-h-screen bg-eggBg px-4 py-6 md:px-8">
 
       {/* --------------------------------------- */}
       {/* SIDEBAR */}

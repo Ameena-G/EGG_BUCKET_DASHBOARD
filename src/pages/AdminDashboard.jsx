@@ -1,148 +1,89 @@
-import React, { useState } from "react";
-import logo from "../assets/Logo.png";
-import Users from "./Users"; // your add/edit/delete user page
+import { useEffect, useState } from "react";
+import { useDamage } from "../context/DamageContext";
 
 export default function AdminDashboard() {
-  const [activePage, setActivePage] = useState("Dashboard");
+  const { totalDamages } = useDamage();
+  const [totalOutlets, setTotalOutlets] = useState(0);
+
+  useEffect(() => {
+    const data = localStorage.getItem("egg_outlets_v1");
+    if (data) {
+      setTotalOutlets(JSON.parse(data).length);
+    }
+  }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#F5EBD9]">
+    <div className="min-h-screen bg-eggBg px-4 py-6 md:px-8 flex flex-col">
 
-      {/* --------------------------------------- */}
-      {/* SIDEBAR */}
-      {/* --------------------------------------- */}
-      <div className="w-64 bg-[#F4D7B8] p-6 flex flex-col shadow-xl">
-
-        <div className="flex items-center gap-3 mb-8">
-          <img src={logo} className="w-10" />
-          <h1 className="text-xl font-bold text-gray-800">Egg Bucket</h1>
+      {/* Dashboard Overview Top Bar */}
+      <div className="bg-white rounded-xl shadow px-6 py-4 mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-gray-800">
+            Dashboard Overview
+          </h1>
+          <p className="text-sm text-gray-500">
+            Welcome back! Here’s what’s happening today.
+          </p>
         </div>
 
-        <div className="space-y-3 text-gray-700 font-medium">
-
-          <SidebarItem
-            name="Dashboard"
-            active={activePage === "Dashboard"}
-            onClick={() => setActivePage("Dashboard")}
-          />
-
-          <SidebarItem name="Daily Damages" />
-          <SidebarItem name="NECC Rate" />
-          <SidebarItem name="Daily Sales" />
-          <SidebarItem name="Digital Payments" />
-          <SidebarItem name="Cash Payments" />
-          <SidebarItem name="Distribution" />
-          <SidebarItem name="Outlets" />
-          <SidebarItem name="Reports" />
-
-          {/* USERS PAGE */}
-          <SidebarItem
-            name="Users"
-            active={activePage === "Users"}
-            onClick={() => setActivePage("Users")}
-          />
-
+        <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-semibold">
+          U
         </div>
       </div>
 
-      {/* --------------------------------------- */}
-      {/* MAIN CONTENT AREA */}
-      {/* --------------------------------------- */}
-      <div className="flex-1 p-6 overflow-auto">
-
-        {/* TOP BAR */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-lg font-semibold">
-            {activePage === "Dashboard" ? "Admin Dashboard" : activePage}
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-700">🔔</span>
-            <img
-              src="https://i.pravatar.cc/40"
-              className="w-10 h-10 rounded-full border"
-            />
-          </div>
-        </div>
-
-        {/* SWITCH BETWEEN PAGES */}
-        {activePage === "Dashboard" ? (
-          <DashboardHome />
-        ) : activePage === "Users" ? (
-          <Users />
-        ) : (
-          <Placeholder name={activePage} />
-        )}
-
-      </div>
-    </div>
-  );
-}
-
-/* --------------------------------------------- */
-/* COMPONENTS */
-/* --------------------------------------------- */
-
-function SidebarItem({ name, active, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`cursor-pointer px-4 py-2 rounded-lg ${
-        active ? "bg-white shadow font-semibold" : "hover:bg-white/60"
-      }`}
-    >
-      {name}
-    </div>
-  );
-}
-
-/* ---------------- Dashboard Home Content ---------------- */
-function DashboardHome() {
-  return (
-    <>
-      {/* HERO BANNER */}
-      <div className="w-full h-60 bg-yellow-200 rounded-xl mb-8 shadow-md flex items-center justify-center">
-        <h2 className="text-3xl font-bold text-gray-800">About Egg Bucket</h2>
+      {/* About Egg Bucket */}
+      <div className="w-full bg-yellow-200 rounded-xl mb-8 shadow-md p-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          About Egg Bucket
+        </h2>
+        <p className="text-gray-700">
+          Egg Bucket helps manage egg distribution with transparency and
+          real-time reporting.
+        </p>
       </div>
 
-      {/* QUICK STATS */}
-      <div className="grid grid-cols-4 gap-4 mb-10">
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
 
         <StatCard title="Total Eggs Distributed Today" value="12,540" icon="🥚" />
 
-        <StatCard title="Total Outlets" value="452" icon="🏪" />
+        {/* ✅ FIXED: dynamic outlet count */}
+        <StatCard title="Total Outlets" value={totalOutlets} icon="🏪" />
 
-        <StatCard title="Damages This Week" value="85" icon="📉" />
+        <StatCard
+          title="Damages This Week"
+          value={totalDamages}
+          icon="📉"
+        />
 
-        <StatCard title="Today's NECC Rate" value="₹ 5.20/egg" icon="📈" />
+        <StatCard title="Today's NECC Rate" value="₹5.20" icon="📈" />
 
       </div>
 
-      {/* MILESTONES */}
+      {/* Achievements */}
       <h2 className="text-xl font-bold mb-4">Achievements & Milestones</h2>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <MilestoneCard date="Q1 2024" title="Expanded to 5 New Regions" icon="➡️" />
         <MilestoneCard date="Oct 2023" title="1 Million Eggs Distributed Monthly" icon="🏆" />
         <MilestoneCard date="Aug 2023" title="Launched Digital Payment System" icon="💳" />
       </div>
 
-      {/* FOOTER */}
-      <footer className="mt-10 text-gray-700 text-sm flex justify-between">
-        <p>Contact Us: support@eggbucket.com | +91 123 456 7890</p>
-        <p>Address: 123 Egg Lane, Poultry Park, New Delhi</p>
-      </footer>
-    </>
-  );
-}
+      {/* Footer */}
+      <div className="mt-12 p-4 bg-orange-100 rounded-xl flex flex-col sm:flex-row justify-between gap-2 text-sm">
+        <div>
+          <strong>Contact:</strong> eggbukect@144.com
+        </div>
+        <div>
+          <strong>Address:</strong> Bandepalya, Bangalore, Karnataka
+        </div>
+      </div>
 
-/* ---------------- Placeholder for other pages ---------------- */
-function Placeholder({ name }) {
-  return (
-    <div className="w-full h-60 bg-white/60 rounded-xl shadow flex items-center justify-center text-xl text-gray-600">
-      {name} page coming soon...
     </div>
   );
 }
+
+/* ---------------- Reusable Components ---------------- */
 
 function StatCard({ title, value, icon }) {
   return (
