@@ -1,4 +1,4 @@
-import line from '../assets/linegraph.png';
+
 
 export default function Rateanalytics() {
   return (
@@ -10,11 +10,7 @@ export default function Rateanalytics() {
         
         {/* Chart */}
         <div className="bg-white shadow rounded-xl p-6 h-35 flex items-center justify-center">
-          <img
-            src={line}
-            alt="Line Graph"
-            className="h-full w-full object-absolute"
-          />
+          <p>The sales graph of eggs necc rate</p>
         </div>
 
         {/* Card 1 */}
