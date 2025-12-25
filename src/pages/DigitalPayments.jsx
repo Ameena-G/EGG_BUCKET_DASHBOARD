@@ -708,6 +708,17 @@ export default function DigitalPayment() {
                   </td>
                 </tr>
               ))}
+              {/* Grand Total Row */}
+              <tr className="bg-orange-50 font-semibold text-orange-700">
+                <td className="whitespace-nowrap px-4 py-3">Grand Total</td>
+                {outlets.map((outlet) => {
+                  const total = rows.reduce((sum, r) => sum + (r.outlets && r.outlets[outlet] ? Number(r.outlets[outlet]) : 0), 0);
+                  return (
+                    <td key={outlet} className="whitespace-nowrap px-4 py-3">{formatCurrencyTwoDecimals(total)}</td>
+                  );
+                })}
+                <td className="whitespace-nowrap px-4 py-3 text-right">{formatCurrencyTwoDecimals(rows.reduce((sum, r) => sum + (r.totalAmount || 0), 0))}</td>
+              </tr>
             </tbody>
           </table>
         </div>
