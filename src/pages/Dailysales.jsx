@@ -43,7 +43,7 @@ const Dailysales = () => {
 
         {/* Entry Form (biggest block) */}
         <div className="col-span-2">
-          <Dailyentryform addrow={addrow} blockeddates={blockeddates}/>
+          <Dailyentryform addrow={addrow} blockeddates={blockeddates} rows={rows}/>
         </div>
 
         <div className="flex flex-col">

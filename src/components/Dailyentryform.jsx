@@ -218,7 +218,7 @@ function BaseCalendar({ rows, selectedDate, onSelectDate, showDots }) {
 
 /* ---------------- DAILY ENTRY FORM ---------------- */
 
-const Dailyentryform = ({ addrow, blockeddates }) => {
+const Dailyentryform = ({ addrow, blockeddates, rows }) => {
   const [date, setDate] = useState("");
   const [openCal, setOpenCal] = useState(false);
 
@@ -284,19 +284,13 @@ const Dailyentryform = ({ addrow, blockeddates }) => {
         </button>
 
         {/* Status message below */}
-        {date && (
-          <p className={`mt-2 text-xs font-medium ${
-            hasEntry ? "text-red-600" : "text-green-600"
-          }`}>
-            {hasEntry ? "⚠ Date already exists (locked)" : "✓ Date available"}
-          </p>
-        )}
+        {/* Status message removed as per request */}
 
         {/* Calendar opens directly above the icon (right-aligned) */}
         {openCal && (
           <div className="absolute right-0 bottom-full mb-2 z-50">
             <BaseCalendar
-              rows={blockeddates}
+              rows={rows}
               selectedDate={date}
               onSelectDate={(iso) => {
                 setDate(iso);
@@ -320,9 +314,7 @@ const Dailyentryform = ({ addrow, blockeddates }) => {
             <div key={label} className="space-y-1">
               <p className="text-xs font-medium text-gray-600">{label}</p>
               <div className="relative">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
-                  ₹
-                </span>
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">₹</span>
                 <input
                   type="number"
                   min="0"

@@ -49,13 +49,13 @@ export default function DailyTable({rows}) {
                 <td className="whitespace-nowrap px-4 py-3">
                   {formatDisplayDate(row.date)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3">{row.aecs}</td>
-                <td className="whitespace-nowrap px-4 py-3">{row.bande}</td>
-                <td className="whitespace-nowrap px-4 py-3">{row.hosa}</td>
-                <td className="whitespace-nowrap px-4 py-3">{row.singa}</td>
-                <td className="whitespace-nowrap px-4 py-3">{row.kudlu}</td>
+                <td className="whitespace-nowrap px-4 py-3">₹{row.aecs}</td>
+                <td className="whitespace-nowrap px-4 py-3">₹{row.bande}</td>
+                <td className="whitespace-nowrap px-4 py-3">₹{row.hosa}</td>
+                <td className="whitespace-nowrap px-4 py-3">₹{row.singa}</td>
+                <td className="whitespace-nowrap px-4 py-3">₹{row.kudlu}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-orange-600">
-                  {row.total}
+                  ₹{row.total}
                 </td>
               </tr>
             ))}
@@ -63,13 +63,13 @@ export default function DailyTable({rows}) {
             {/* ⭐ COLUMN TOTAL ROW (GRAND TOTAL) */}
             <tr className="bg-orange-50 font-semibold text-orange-700">
               <td className="whitespace-nowrap px-4 py-3">Grand Total</td>
-              <td className="whitespace-nowrap px-4 py-3">{totals.aecs}</td>
-              <td className="whitespace-nowrap px-4 py-3">{totals.bande}</td>
-              <td className="whitespace-nowrap px-4 py-3">{totals.hosa}</td>
-              <td className="whitespace-nowrap px-4 py-3">{totals.singa}</td>
-              <td className="whitespace-nowrap px-4 py-3">{totals.kudlu}</td>
+              <td className="whitespace-nowrap px-4 py-3">₹{totals.aecs}</td>
+              <td className="whitespace-nowrap px-4 py-3">₹{totals.bande}</td>
+              <td className="whitespace-nowrap px-4 py-3">₹{totals.hosa}</td>
+              <td className="whitespace-nowrap px-4 py-3">₹{totals.singa}</td>
+              <td className="whitespace-nowrap px-4 py-3">₹{totals.kudlu}</td>
               <td className="whitespace-nowrap px-4 py-3 text-right text-orange-800">
-                {grandTotal}
+                ₹{grandTotal}
               </td>
             </tr>
           </tbody>
