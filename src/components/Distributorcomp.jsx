@@ -7,8 +7,8 @@ import {
   faStore,
   faMoneyBill,
   faWallet,
-  faIndianRupeeSign,     // For NECC Rate
-  faExclamationTriangle, // For Damages
+  faIndianRupeeSign,
+  faArrowsSplitUpAndLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -48,16 +48,16 @@ const Distributorcomp = () => {
       desc: "Log and verify cash transactions.",
     },
     {
-      name: "NECC Rate",
-      value: "necc_rate",
+      name: "Necc-Rate",
+      value:"neccrate",
       icon: faIndianRupeeSign,
-      desc: "Enter and manage daily NECC egg rates.",
+      desc: "Average amount of eggs.",
     },
     {
-      name: "Damages",
-      value: "damages",
-      icon: faExclamationTriangle,
-      desc: "Record and track damaged eggs per outlet.",
+      name: "daily-damages",
+      value:"dailydamages",
+      icon: faArrowsSplitUpAndLeft,
+      desc: "total eggs damaged.",
     },
   ];
 

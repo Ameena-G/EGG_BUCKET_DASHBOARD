@@ -1,5 +1,4 @@
   import React from 'react'
-  import WeeklyTrendGraph from "../assets/weeklyTrend.jpg";
 
 
   const Weeklytrend = () => {
@@ -12,8 +11,7 @@
 
       {/* Graph Image */}
       <div className="mt-4 flex justify-center">
-        <img
-          src={WeeklyTrendGraph}
+        <img src="graph.png"
           alt="Weekly trend graph"
           className="h-45 w-full object-absolute"
         />
