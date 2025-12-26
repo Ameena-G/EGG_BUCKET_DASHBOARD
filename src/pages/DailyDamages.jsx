@@ -386,10 +386,12 @@ export default function DailyDamages() {
     setEntryTotal(total);
   };
 
-  const filteredData = damages.filter((d) => {
-    if (!fromDate || !toDate) return true;
-    return d.date >= fromDate && d.date <= toDate;
-  });
+  const filteredData = damages
+    .filter((d) => {
+      if (!fromDate || !toDate) return true;
+      return d.date >= fromDate && d.date <= toDate;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date ascending (oldest to newest)
 
   const downloadExcel = () => {
     if (filteredData.length === 0) {
@@ -416,6 +418,71 @@ export default function DailyDamages() {
         </div>
       </div>
 
+      {/* Download Report - moved to top */}
+      <div className="bg-white p-6 rounded-xl shadow mb-8">
+        <h2 className="text-xl font-semibold mb-4">Download Report</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+          <div className="relative">
+            <label className="block text-sm text-gray-600 mb-1">
+              From Date
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsFromCalendarOpen((o) => !o)}
+              className="w-full rounded-lg border border-gray-200 bg-eggBg px-4 py-2 text-left text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            >
+              {fromDate ? formatDateDMY(fromDate) : "dd-mm-yyyy"}
+              <CalendarIcon className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+            </button>
+            {isFromCalendarOpen && (
+              <div className="absolute z-10 mt-2">
+                <BaseCalendar
+                  rows={damages}
+                  selectedDate={fromDate}
+                  onSelectDate={(iso) => {
+                    setFromDate(iso);
+                    setIsFromCalendarOpen(false);
+                  }}
+                  showDots={false}
+                />
+              </div>
+            )}
+          </div>
+          <div className="relative">
+            <label className="block text-sm text-gray-600 mb-1">
+              To Date
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsToCalendarOpen((o) => !o)}
+              className="w-full rounded-lg border border-gray-200 bg-eggBg px-4 py-2 text-left text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            >
+              {toDate ? formatDateDMY(toDate) : "dd-mm-yyyy"}
+              <CalendarIcon className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+            </button>
+            {isToCalendarOpen && (
+              <div className="absolute z-10 mt-2">
+                <BaseCalendar
+                  rows={damages}
+                  selectedDate={toDate}
+                  onSelectDate={(iso) => {
+                    setToDate(iso);
+                    setIsToCalendarOpen(false);
+                  }}
+                  showDots={false}
+                />
+              </div>
+            )}
+          </div>
+          <button
+            onClick={downloadExcel}
+            className="mt-4 sm:mt-0 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg shadow"
+          >
+            Download Excel
+          </button>
+        </div>
+      </div>
+
       {/* Data Table */}
       <div className="bg-white p-6 rounded-xl shadow overflow-x-auto mb-8">
         <table className="w-full border-collapse">
@@ -429,86 +496,40 @@ export default function DailyDamages() {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((d, i) => (
-              <tr
-                key={i}
-                className="border-t text-sm hover:bg-gray-50 transition"
-              >
-                <td className="p-3 text-left">{formatDateDisplay(d.date)}</td>
-                {outlets.map((name) => (
-                  <td key={name} className="p-3 text-center">{d[name] ?? 0}</td>
-                ))}
-                <td className="p-3 text-center font-bold text-orange-600">
-                  {d.total}
-                </td>
-              </tr>
-            ))}
+            {filteredData.map((d, i) => {
+              // Calculate total for this row if not present
+              const rowTotal = outlets.reduce((sum, name) => sum + Number(d[name] || 0), 0);
+              return (
+                <tr
+                  key={i}
+                  className="border-t text-sm hover:bg-gray-50 transition"
+                >
+                  <td className="p-3 text-left">{formatDateDisplay(d.date)}</td>
+                  {outlets.map((name) => (
+                    <td key={name} className="p-3 text-center">{d[name] ?? 0}</td>
+                  ))}
+                  <td className="p-3 text-center font-bold text-orange-600">
+                    {typeof d.total === 'number' ? d.total : rowTotal}
+                  </td>
+                </tr>
+              );
+            })}
+            {/* Grand Total Row */}
+            <tr className="bg-orange-50 font-semibold text-orange-700">
+              <td className="p-3 text-left">Grand Total</td>
+              {outlets.map((name) => {
+                const total = filteredData.reduce((sum, d) => sum + Number(d[name] || 0), 0);
+                return (
+                  <td key={name} className="p-3 text-center">{total}</td>
+                );
+              })}
+              <td className="p-3 text-center">{filteredData.reduce((sum, d) => sum + (typeof d.total === 'number' ? d.total : outlets.reduce((s, name) => s + Number(d[name] || 0), 0)), 0)}</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      {/* Download Report */}
-      <div className="bg-white p-6 rounded-xl shadow mb-8">
-        <h2 className="text-xl font-semibold mb-4">Download Report</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-          <div className="relative">
-            <label className="block text-sm text-gray-600 mb-1">
-              From Date
-            </label>
-            <button
-              type="button"
-              onClick={() => setIsFromCalendarOpen((o) => !o)}
-              className="flex min-w-[120px] items-center justify-between rounded-lg border p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-400"
-            >
-              <span>
-                {fromDate ? formatDateDMY(fromDate) : "dd-mm-yyyy"}
-              </span>
-              <CalendarIcon className="h-4 w-4 text-gray-500 ml-2" />
-            </button>
-            {isFromCalendarOpen && (
-              <div className="absolute left-0 top-full z-30 mt-2">
-                <BaseCalendar
-                  rows={damages}
-                  selectedDate={fromDate}
-                  onSelectDate={setFromDate}
-                  showDots={false}
-                />
-              </div>
-            )}
-          </div>
-          <div className="relative">
-            <label className="block text-sm text-gray-600 mb-1">
-              To Date
-            </label>
-            <button
-              type="button"
-              onClick={() => setIsToCalendarOpen((o) => !o)}
-              className="flex min-w-[120px] items-center justify-between rounded-lg border p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-400"
-            >
-              <span>
-                {toDate ? formatDateDMY(toDate) : "dd-mm-yyyy"}
-              </span>
-              <CalendarIcon className="h-4 w-4 text-gray-500 ml-2" />
-            </button>
-            {isToCalendarOpen && (
-              <div className="absolute left-0 top-full z-30 mt-2">
-                <BaseCalendar
-                  rows={damages}
-                  selectedDate={toDate}
-                  onSelectDate={setToDate}
-                  showDots={false}
-                />
-              </div>
-            )}
-          </div>
-          <button
-            onClick={downloadExcel}
-            className="h-[42px] bg-green-600 hover:bg-green-700 text-white px-6 rounded-lg font-medium"
-          >
-            Download Excel
-          </button>
-        </div>
-      </div>
+      {/* Download Report section removed from center */}
 
       {/* Damage Entry – now matches Digital Payment Entry UI exactly */}
       <div className="mt-8 rounded-2xl bg-eggWhite p-5 shadow-sm md:p-6">
@@ -549,7 +570,7 @@ export default function DailyDamages() {
                 <div className="mt-2 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500" />
                   <div className="text-xs font-medium text-green-700">
-                    Entry (₹{entryTotal}) • Locked
+                    Entry ({entryTotal}) • Locked
                   </div>
                 </div>
               )}
@@ -577,12 +598,9 @@ export default function DailyDamages() {
                 </p>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
-                    ₹
                   </span>
                   <input
                     type="number"
-                    min="0"
-                    step="0.01"
                     value={form[outlet] ?? 0}
                     onChange={(e) =>
                       setForm((prev) => ({
