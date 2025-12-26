@@ -165,9 +165,8 @@ const Dailysales = () => {
       <div className='bg-[#F8F6F2] min-h-screen p-6 w-340'>
 
       <Topbar/>
-        <Dailyheader onDownload={handleDownload}/>
-        {/* Removed left-side Download Excel button */}
-      <DailyTable rows={sortedRows} outlets={outlets}/>
+      <Dailyheader dailySalesData={rows}/>
+      <DailyTable rows={rows}/>
       <div className="grid grid-cols-3 gap-6 mt-10">
 
         {/* Entry Form (biggest block) */}
