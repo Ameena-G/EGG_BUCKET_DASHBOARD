@@ -223,24 +223,30 @@ const Entryform = ({ addRow, blockedDates, rows }) => {
   const [rate, setRate] = useState("");
   const [remarks, setRemarks] = useState("");
   const [open, setOpen] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+
+  useEffect(() => {
+    if (!date) {
+      setIsLocked(false);
+      return;
+    }
+    setIsLocked(blockedDates.includes(date));
+  }, [date, blockedDates]);
 
   const handleSubmit = () => {
     if (!date || !rate) {
       alert("Date and Rate are required");
       return;
     }
-
-    if (blockedDates.includes(date)) {
+    if (isLocked) {
       alert("Data for this date already exists!");
       return;
     }
-
     addRow({
       date,
       rate: `₹${rate} per egg`,
       remarks: remarks || "—",
     });
-
     setDate("");
     setRate("");
     setRemarks("");
@@ -267,7 +273,7 @@ const Entryform = ({ addRow, blockedDates, rows }) => {
               <CalendarIcon className="h-4 w-4 text-gray-500" />
             </button>
 
-            {/* Calendar opens upwards */}
+            {/* Calendar opens upwards - always enabled */}
             {open && (
               <div className="absolute left-0 right-0 bottom-full mb-2 z-30">
                 <BaseCalendar
@@ -294,6 +300,7 @@ const Entryform = ({ addRow, blockedDates, rows }) => {
               value={rate}
               onChange={(e) => setRate(e.target.value)}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400"
+              disabled={isLocked}
             />
           </div>
 
@@ -306,19 +313,33 @@ const Entryform = ({ addRow, blockedDates, rows }) => {
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="Any note..."
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400"
+              disabled={isLocked}
             />
           </div>
 
-          {/* SAVE BUTTON - always enabled, perfectly aligned */}
+          {/* SAVE BUTTON - lock if entry exists */}
           <div className="md:ml-auto flex items-end h-full">
             <button
               onClick={handleSubmit}
-              className="w-full md:w-auto inline-flex items-center justify-center rounded-2xl px-8 py-2.5 text-sm font-semibold text-white shadow-md bg-orange-500 hover:bg-orange-600 transition-colors"
+              className={`w-full md:w-auto inline-flex items-center justify-center rounded-2xl px-8 py-2.5 text-sm font-semibold text-white shadow-md transition-colors ${
+                isLocked
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600"
+              }`}
+              disabled={isLocked}
             >
-              Save Data
+              {isLocked ? "Locked" : "Save Data"}
             </button>
           </div>
         </div>
+        {/* Status message below */}
+        {date && (
+          <p className={`mt-2 text-xs font-medium ${
+            isLocked ? "text-red-600" : "text-green-600"
+          }`}>
+            {isLocked ? "Entry Locked for this date" : "✓ Date available"}
+          </p>
+        )}
       </div>
     </div>
   );

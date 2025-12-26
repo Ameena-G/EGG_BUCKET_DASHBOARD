@@ -96,7 +96,7 @@ function BaseCalendar({ selectedDate, onSelectDate }) {
   );
 }
 
-/* ---------- MAIN HEADER ---------- */
+
 
 const Dailyheader = ({ dailySalesData = [] }) => {
   const [fromDate, setFromDate] = useState("");
